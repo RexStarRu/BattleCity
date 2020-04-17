@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.17 FATAL_ERROR)
 
 set (PROJECT_NAME 
-			NewTest
+			BattleCity
 )
 
 project(${PROJECT_NAME})
