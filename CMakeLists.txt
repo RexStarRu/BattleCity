@@ -8,9 +8,14 @@ project(${PROJECT_NAME})
 
 set(SOURCES 
 		src/Main.cpp
+		src/Renderer/ShaderProgram.cpp
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+set(HEADER 
+		src/Renderer/ShaderProgram.h
+)
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADER})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17

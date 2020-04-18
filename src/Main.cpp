@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "Renderer/ShaderProgram.h"
+
                                                           //массив вершин (3)
 
 GLfloat point[] = {
@@ -95,23 +97,16 @@ int main(int argc, char argv[])
 	
 	glClearColor(0.0, 0.5, 0.5, 1);
 
-    GLuint vs = glCreateShader(GL_VERTEX_SHADER);    //создаём шейдер
-    glShaderSource(vs, 1, &vertex_shader, nullptr);  //привязываем исходный код шейдера
-    glCompileShader(vs);                             //компилируем шедер
+    const std::string vertexShader = vertex_shader;
+    const std::string fragmentShader = fragment_shader;
 
-    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);   //создаём шейдер
-    glShaderSource(fs, 1, &fragment_shader, nullptr); //привязываем исходный код шейдера
-    glCompileShader(fs);                              //компилируем шедер
-
-    GLuint shader_program = glCreateProgram();          //создаём шейдерную программу
-    glAttachShader(shader_program, vs);                 //аттачим вертексный шейдер к шейдорной программе
-    glAttachShader(shader_program, fs);                 //аттачим фрагментный шейдер к шейдорной программе
-    glLinkProgram(shader_program);                      //линкуем все в шейдерной программе
-
-    glDeleteShader(vs);                 //удаляем отработанные шейдеры
-    glDeleteShader(fs);                 //удаляем отработанные шейдеры
-
-
+    Renderer::ShaderProgram shaderProgram(vertexShader, fragmentShader);
+    
+    if (!shaderProgram.isCompiled())
+    {
+        std::cerr << "ERROR: Can't create Shader Program!" << std::endl;
+        return -1;
+    }
 
     GLuint points_vbo = 0;                      //хендер vbo 
     glGenBuffers(1, &points_vbo);               //генерируем 1 буффер vbo для вертексов
@@ -142,18 +137,13 @@ int main(int argc, char argv[])
 
 
 
-
-
-
-
-
    //-----------------------------------------------------------Основной цикл--------------------------------------------------------------------------------------------------
     while (!glfwWindowShouldClose(pWindow))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
 
-        glUseProgram(shader_program);     //подключаем шейдер который необходимо отрисовать
+        shaderProgram.use();     //подключаем шейдер который необходимо отрисовать
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3); //отрисовываем триугольник с 1й (0й) точки 3 грани
 
@@ -163,11 +153,6 @@ int main(int argc, char argv[])
         glfwPollEvents();
     }
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
 
     glfwTerminate();
 	return 0;
